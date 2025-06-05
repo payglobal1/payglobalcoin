@@ -1206,25 +1206,31 @@ await initializeContract();
 }
 ];
 // Global functions
-async function fetchEthPrice(){
-try {
-ethUsd = 2500; // Static ETH price
-updateEthDisplay();
-} catch (error) {
-console.error("Price fetch failed:", error);
-}
-}
-function updateEthDisplay() {
-const liveRate = document.getElementById('liveRate');
-if(liveRate && window.ethUsd > 0) {
-if(liveRate.dataset.currentMethod === 'ETH') {
-liveRate.textContent = `1 ETH ($${window.ethUsd.toLocaleString()}) = 833,333 PGC`;
-}
-}
-}
-// Initialize price update interval
-setInterval(fetchEthPrice, 10000);
-fetchEthPrice();
+window.addEventListener("DOMContentLoaded", async () => {
+  try {
+    const response = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd');
+    const data = await response.json();
+    const ethusd = data.ethereum.usd;
+    function updateEthDisplay() {
+      const liveRate = document.getElementById('liveRate');
+      if(liveRate && ethusd > 0) {
+        if(liveRate.dataset.currentMethod === 'ETH') {
+          liveRate.textContent = `1 ETH ($${ethusd.toLocaleString()}) = 833,333 PGC`;
+        }
+      }
+    }
+    updateEthDisplay();
+    setInterval(updateEthDisplay, 10000);
+  } catch (e) {
+    console.error("ETH price fetch error", e);
+    // Fallback to static price if API fails
+    const ethusd = 2500;
+    const liveRate = document.getElementById('liveRate');
+    if(liveRate) {
+      liveRate.textContent = `1 ETH ($${ethusd.toLocaleString()}) = 833,333 PGC`;
+    }
+  }
+});
 </script>
 <script>
 tailwind.config = {
