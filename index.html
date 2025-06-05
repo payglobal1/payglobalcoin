@@ -1207,29 +1207,29 @@ await initializeContract();
 ];
 // Global functions
 window.addEventListener("DOMContentLoaded", async () => {
-  try {
-    const response = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd');
-    const data = await response.json();
-    const ethusd = data.ethereum.usd;
-    function updateEthDisplay() {
-      const liveRate = document.getElementById('liveRate');
-      if(liveRate && ethusd > 0) {
-        if(liveRate.dataset.currentMethod === 'ETH') {
-          liveRate.textContent = `1 ETH ($${ethusd.toLocaleString()}) = 833,333 PGC`;
-        }
-      }
-    }
-    updateEthDisplay();
-    setInterval(updateEthDisplay, 10000);
-  } catch (e) {
-    console.error("ETH price fetch error", e);
-    // Fallback to static price if API fails
-    const ethusd = 2500;
-    const liveRate = document.getElementById('liveRate');
-    if(liveRate) {
-      liveRate.textContent = `1 ETH ($${ethusd.toLocaleString()}) = 833,333 PGC`;
-    }
-  }
+try {
+const response = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd');
+const data = await response.json();
+const ethusd = data.ethereum.usd;
+function updateEthDisplay() {
+const liveRate = document.getElementById('liveRate');
+if(liveRate && ethusd > 0) {
+if(liveRate.dataset.currentMethod === 'ETH') {
+liveRate.textContent = `1 ETH ($${ethusd.toLocaleString()}) = 833,333 PGC`;
+}
+}
+}
+updateEthDisplay();
+setInterval(updateEthDisplay, 10000);
+} catch (e) {
+console.error("ETH price fetch error", e);
+// Fallback to static price if API fails
+const ethusd = 2500;
+const liveRate = document.getElementById('liveRate');
+if(liveRate) {
+liveRate.textContent = `1 ETH ($${ethusd.toLocaleString()}) = 833,333 PGC`;
+}
+}
 });
 </script>
 <script>
@@ -3102,6 +3102,7 @@ receiveAmount.value = (ethAmount * 833333).toLocaleString();
 <div class="mb-6">
 <label class="block text-gray-700 text-sm font-medium mb-2">You will receive</label>
 <div class="relative">
+<span id="pgcReceiveAmount" class="hidden">0</span>
 <input id="receiveAmount" type="text" class="w-full p-3 bg-gray-100 border border-gray-300 rounded-lg focus:outline-none" readonly value="0">
 <div class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500">PGC</div>
 </div>
@@ -5142,6 +5143,7 @@ setTimeout(() => notification.remove(), 500);
 // Calculate PGC amount
 const pgcAmount = amount * conversionRates[currentPaymentMethod];
 receiveAmount.value = pgcAmount.toLocaleString('en-US', {maximumFractionDigits: 2});
+pgcReceiveAmount.textContent = pgcAmount.toLocaleString('en-US', {maximumFractionDigits: 2});
 };
 window.connectCoinbaseWallet = async function() {
 const mainConnectButton = document.querySelector('button[onclick="openWalletModal()"]');
